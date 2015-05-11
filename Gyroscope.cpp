@@ -1,4 +1,5 @@
 #include "Gyroscope.h"
+#include "WritePins.h"
 
 #define RESET_BUS_AND_BREAK Wire.begin(); \
 digitalWriteFast(13,HIGH); \
@@ -55,24 +56,31 @@ void Gyroscope::setMaxAngularVelocity(Gyroscope::MaxAngularVelocity max){
 //!!we need to handle errors here!
 void Gyroscope::update(){
 	for(;;){
+		WritePins(2);
 		Wire.beginTransmission(deviceAddress);
 		Wire.write(GYRO_REGISTER_OUT_X_L | 0x80);
 		if(Wire.endTransmission()){
 			RESET_BUS_AND_BREAK
 		}
+		WritePins(3);
 
 		if(!Wire.requestFrom(deviceAddress,6)){
 			RESET_BUS_AND_BREAK
 		}
+		WritePins(4);
+
 		while(Wire.available() < 6);		//sholuld never seize up with teensy
-																//since requestFrom blocks until all data received
+		WritePins(5);									//since requestFrom blocks until all data received
+
 		x = (Wire.read() | Wire.read() << 8) - xOffset;
 		y = (Wire.read() | Wire.read() << 8) - yOffset;
 		z = (Wire.read() | Wire.read() << 8) - zOffset;
 
+		WritePins(6);
 		if(Wire.endTransmission()){
 			RESET_BUS_AND_BREAK
 		}
+		WritePins(7);
 		break;
 	}
 }

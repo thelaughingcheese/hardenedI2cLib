@@ -80,4 +80,6 @@ extern "C" void __cxa_pure_virtual() {;}
 #include <Magnetometer.h>
 #include <WireModified.cpp>
 #include <WireModified.h>
+#include <WritePins.cpp>
+#include <WritePins.h>
 #endif

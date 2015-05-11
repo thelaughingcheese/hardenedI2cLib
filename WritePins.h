@@ -1,0 +1,1 @@
+void WritePins(unsigned char);
