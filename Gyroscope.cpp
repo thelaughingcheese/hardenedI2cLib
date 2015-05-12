@@ -56,21 +56,21 @@ void Gyroscope::setMaxAngularVelocity(Gyroscope::MaxAngularVelocity max){
 //!!we need to handle errors here!
 void Gyroscope::update(){
 	for(;;){
-		WritePins(2);
+	WritePins(2);
 		Wire.beginTransmission(deviceAddress);
 		Wire.write(GYRO_REGISTER_OUT_X_L | 0x80);
 		if(Wire.endTransmission()){
 			RESET_BUS_AND_BREAK
 		}
-		WritePins(3);
+	WritePins(3);
 
 		if(!Wire.requestFrom(deviceAddress,6)){
 			RESET_BUS_AND_BREAK
 		}
-		WritePins(4);
+	WritePins(4);
 
 		while(Wire.available() < 6);		//sholuld never seize up with teensy
-		WritePins(5);									//since requestFrom blocks until all data received
+	WritePins(5);									//since requestFrom blocks until all data received
 
 		x = (Wire.read() | Wire.read() << 8) - xOffset;
 		y = (Wire.read() | Wire.read() << 8) - yOffset;

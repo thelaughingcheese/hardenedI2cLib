@@ -16,8 +16,8 @@ accelZFilter(30){
 	roll = 0;
 	yaw = 0;
 
-	gyroscope.calibrateOffset();
-
+	//gyroscope.calibrateOffset();
+	
 	lastUpdate = micros();
 }
 

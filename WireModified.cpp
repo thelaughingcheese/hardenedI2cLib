@@ -31,6 +31,7 @@
 //#include "HardwareSerial.h"
 #include "WireModified.h"
 #include "Globals.h"
+#include "WritePins.h"
 
 uint8_t TwoWireModified::rxBuffer[BUFFER_LENGTH];
 uint8_t TwoWireModified::rxBufferIndex = 0;
@@ -355,7 +356,7 @@ void TwoWireModified::flush(void)
 uint8_t TwoWireModified::endTransmission(uint8_t sendStop)
 {
 	uint8_t i, status, ret=0;
-
+WritePins(8);
 	// clear the status flags
 	I2C0_S = I2C_S_IICIF | I2C_S_ARBL;
 	// now take control of the bus...
@@ -367,6 +368,31 @@ uint8_t TwoWireModified::endTransmission(uint8_t sendStop)
 		unsigned long waitStart = micros();
 		while(I2C0_S & I2C_S_BUSY) {	//spin
 			if(micros() - waitStart > I2C_WAIT_TIMEOUT){
+				if(digitalReadFast(18) == LOW){
+					digitalWriteFast(6,HIGH);
+
+					pinMode(20,OUTPUT);
+
+					digitalWriteFast(20,HIGH);
+					delayMicroseconds(5);
+					digitalWriteFast(20,LOW);
+					delayMicroseconds(5);
+					digitalWriteFast(20,HIGH);
+					delayMicroseconds(5);
+					digitalWriteFast(20,LOW);
+					delayMicroseconds(5);
+					digitalWriteFast(20,HIGH);
+					delayMicroseconds(5);
+					digitalWriteFast(20,LOW);
+					delayMicroseconds(5);
+					digitalWriteFast(20,HIGH);
+					delayMicroseconds(5);
+					digitalWriteFast(20,LOW);
+					delayMicroseconds(5);
+					digitalWriteFast(20,HIGH);
+
+					pinMode(20,INPUT);
+				}
 				return 5;
 			}
 		}
@@ -374,12 +400,15 @@ uint8_t TwoWireModified::endTransmission(uint8_t sendStop)
 		slave_mode = 0;
 		I2C0_C1 = I2C_C1_IICEN | I2C_C1_MST | I2C_C1_TX;
 	}
+WritePins(9);
 	// transmit the address and data
 	for (i=0; i < txBufferLength; i++) {
 		I2C0_D = txBuffer[i];
+WritePins(10);
 		if(i2c_wait()){
 			return 6;
 		}
+WritePins(11);
 		status = I2C0_S;
 		if (status & I2C_S_RXAK) {
 			// the slave device did not acknowledge
@@ -397,11 +426,13 @@ uint8_t TwoWireModified::endTransmission(uint8_t sendStop)
 			break;
 		}
 	}
+WritePins(12);
 	if (sendStop) {
 		// send the stop condition
 		I2C0_C1 = I2C_C1_IICEN;
 		// TODO: do we wait for this somehow?
 	}
+WritePins(13);
 	transmitting = 0;
 	return ret;
 }
